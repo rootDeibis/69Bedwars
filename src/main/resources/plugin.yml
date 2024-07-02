@@ -1,0 +1,6 @@
+name: 69bedwars
+version: '${version}'
+main: me.rootdeibis.bedwars.Loader
+load: STARTUP
+depend:
+  - ProtocolLib
