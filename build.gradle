@@ -1,9 +1,44 @@
-plugins {
-    id 'java'
-}
 
 group = 'me.rootdeibis'
 version = '2.0-SNAPSHOT'
+
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            name = "spigotmc-repo"
+            url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
+        }
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/groups/public/"
+        }
+
+        maven { url "https://repo.dmulloy2.net/repository/public/" }
+
+        maven {
+            name = "CodeMC"
+            url = uri("https://repo.codemc.io/repository/maven-public/")
+        }
+    }
+
+    dependencies {
+        classpath "org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT"
+        classpath group: "com.comphenix.protocol", name: "ProtocolLib", version: "4.8.0";
+
+        classpath "de.tr7zw:item-nbt-api-plugin:2.13.1"
+        classpath 'com.zaxxer:HikariCP:5.1.0'
+
+    }
+}
+
+apply plugin: 'java'
+
+sourceCompatibility = targetCompatibility = 1.8
+compileJava.options.encoding = 'UTF-8'
+
+
 
 repositories {
     mavenCentral()
@@ -24,38 +59,53 @@ repositories {
     }
 }
 
+configurations {
+    embed
+    compile.extendsFrom(embed)
+}
+
+
+
 dependencies {
-    compileOnly "org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT"
-    compileOnly group: "com.comphenix.protocol", name: "ProtocolLib", version: "4.8.0";
 
-    implementation("de.tr7zw:item-nbt-api-plugin:2.13.1")
+    implementation "org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT"
+    implementation group: "com.comphenix.protocol", name: "ProtocolLib", version: "4.8.0"
+    implementation "de.tr7zw:item-nbt-api-plugin:2.13.1"
+    implementation "com.zaxxer:HikariCP:5.1.0"
 
 
-}
-
-def targetJavaVersion = 8
-java {
-    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    sourceCompatibility = javaVersion
-    targetCompatibility = javaVersion
-    if (JavaVersion.current() < javaVersion) {
-        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    embed("de.tr7zw:item-nbt-api-plugin:2.13.1")
+    embed("com.zaxxer:HikariCP:5.1.0") {
+        exclude group: "org.slf4j"
     }
-}
 
-tasks.withType(JavaCompile).configureEach {
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
-        options.release = targetJavaVersion
-    }
 }
 
 processResources {
-    def props = [version: version]
-    inputs.properties props
-    filteringCharset 'UTF-8'
-    filesMatching('plugin.yml') {
-        expand props
+    inputs.files "src/main/resources"
+    outputs.dir "build/classes/main"
+    copy {
+        from("src/main/resources")
+        into("build/classes/main")
     }
 }
 
+jar {
+    dependsOn configurations.compile
+    from {
+        configurations.embed.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+}
 
+jar {
+    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+
+    configurations.embed.each { dep ->
+        from(project.zipTree(dep)) {
+            exclude 'META-INF', 'META-INF/**', "plugin.yml"
+        }
+    }
+}

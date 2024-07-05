@@ -1,6 +1,6 @@
 package me.rootdeibis.bedwars.common.arena;
 
-import me.rootdeibis.bedwars.common.arena.enums.Status;
+import me.rootdeibis.bedwars.common.enums.ArenaStatus;
 import me.rootdeibis.bedwars.common.arena.loader.ArenaWorld;
 import me.rootdeibis.bedwars.common.player.IPlayer;
 
@@ -15,7 +15,7 @@ public interface IArena {
 
     List<IPlayer> getPlayers();
 
-    Status getStatus();
+    ArenaStatus getStatus();
 
 
     ArenaConfig getConfiguration();

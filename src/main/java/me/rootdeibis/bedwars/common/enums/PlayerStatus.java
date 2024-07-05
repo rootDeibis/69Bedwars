@@ -1,4 +1,4 @@
-package me.rootdeibis.bedwars.common.player.enums;
+package me.rootdeibis.bedwars.common.enums;
 
 public enum PlayerStatus {
 

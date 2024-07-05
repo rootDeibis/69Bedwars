@@ -1,9 +1,8 @@
 package me.rootdeibis.bedwars.common.arena;
 
-import me.rootdeibis.bedwars.common.arena.enums.Status;
 import me.rootdeibis.bedwars.common.arena.loader.ArenaWorld;
+import me.rootdeibis.bedwars.common.enums.ArenaStatus;
 import me.rootdeibis.bedwars.common.player.IPlayer;
-import org.bukkit.World;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +14,7 @@ public class Arena implements IArena {
 
     private final List<IPlayer> arenaPlayers = new ArrayList<>();
 
-    private Status arenaStatus = Status.DISABLED;
+    private ArenaStatus arenaStatus = ArenaStatus.DISABLED;
 
     private final ArenaWorld arenaWorld;
 
@@ -48,7 +47,7 @@ public class Arena implements IArena {
     }
 
     @Override
-    public Status getStatus() {
+    public ArenaStatus getStatus() {
         return arenaStatus;
     }
 
@@ -57,7 +56,7 @@ public class Arena implements IArena {
         return arenaConfig;
     }
 
-    public void setStatus(Status arenaStatus) {
+    public void setStatus(ArenaStatus arenaStatus) {
         this.arenaStatus = arenaStatus;
     }
 }
