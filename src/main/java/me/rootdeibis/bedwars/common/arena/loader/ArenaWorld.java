@@ -22,8 +22,7 @@ public class ArenaWorld {
         worldCreator.generateStructures(false);
         worldCreator.type(WorldType.FLAT);
         worldCreator.generatorSettings("2;0;1;");
-
-        this.world = Bukkit.createWorld(worldCreator);
+        this.world = worldCreator.createWorld();
 
     }
 

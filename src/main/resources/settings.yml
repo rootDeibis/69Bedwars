@@ -1,0 +1,30 @@
+#
+# 69BedWars - by rootDeibis
+# v1.0 - Beta
+# Configuration Version: 1.0
+#
+# Free Version
+
+# At the moment only MySQL database is available.
+database:
+  # Database Name
+  name: "bedwars-db"
+  # Database Host - localhost = 127.0.0.1
+  host: "localhost"
+  # Database Username
+  user: "user"
+  # Database User password
+  password: "pass"
+  # Database port - 3306 = default mysql port
+  port: 3306
+  # Database Server use SSL?
+  ssl: false
+  # Verify database certificates
+  verify-certificate: false
+  # Default 10 - learn more about in https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing
+  pool-size: 10
+  # Max connection life time | (1000 * 1000)
+  max-life-time: 1000
+# Settings
+server-name: "bw"
+sort-tablist-game: true

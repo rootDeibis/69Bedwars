@@ -13,9 +13,7 @@ public class PlayerLevelData {
         this.player = player;
     }
 
-    public void fetch() {
-        this.experience = BedwarsPlugin.getInstance().getDatabase().getPlayerDB().getLevel(this.player.getUUID());
-    }
+
 
     public void setExperience(double experience) {
         this.experience = experience;
@@ -23,5 +21,13 @@ public class PlayerLevelData {
 
     public double getExperience() {
         return experience;
+    }
+
+    public void fetch() {
+        this.experience = BedwarsPlugin.getInstance().getDatabase().getPlayerDB().getLevel(this.player.getUUID());
+    }
+
+    public void update() {
+        BedwarsPlugin.getInstance().getDatabase().getPlayerDB().setLevel(this.player.getUUID(), this.experience);
     }
 }

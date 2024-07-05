@@ -7,18 +7,18 @@ import me.rootdeibis.bedwars.common.database.IDatabase;
 import me.rootdeibis.bedwars.common.database.IPlayerDB;
 import me.rootdeibis.bedwars.common.database.enums.SQLQueries;
 import me.rootdeibis.bedwars.common.database.sql.managers.PlayerSQL;
-import me.rootdeibis.bedwars.common.player.IPlayer;
+import me.rootdeibis.bedwars.common.utils.LoggerUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 
 public class MySQLDatabase implements IDatabase {
 
+    private static final LoggerUtils logger = new LoggerUtils(MySQLDatabase.class);
     private HikariDataSource dataSource;
     private final String host;
     private final String database;
@@ -56,6 +56,7 @@ public class MySQLDatabase implements IDatabase {
 
 
 
+
         hikariConfig.setMaximumPoolSize(poolSize);
         hikariConfig.setMaxLifetime(maxLifetime * 1000L);
 
@@ -84,18 +85,21 @@ public class MySQLDatabase implements IDatabase {
 
         hikariConfig.addDataSourceProperty("socketTimeout", String.valueOf(TimeUnit.SECONDS.toMillis(30)));
 
-        this.dataSource = new HikariDataSource(hikariConfig);
-
-
+        logger.debug("Connected to the database...");
 
         try {
-            dataSource.getConnection();
-            this.createTables();
+            this.dataSource = new HikariDataSource(hikariConfig);
 
+            this.createTables();
             this.playerDB = new PlayerSQL(this);
 
-        } catch (SQLException e) {
-           e.printStackTrace();
+            logger.success("The connection to the database was successfully established.");
+
+        }catch (Exception e) {
+
+            logger.error("Could not connect to the database, please check your details.");
+            logger.error(e);
+            Bukkit.getPluginManager().disablePlugin(BedwarsPlugin.getInstance());
         }
 
 
@@ -103,6 +107,8 @@ public class MySQLDatabase implements IDatabase {
 
     @Override
     public void shutdown() {
+        if(this.dataSource == null) return;
+
         if(!this.dataSource.isClosed()) {
             this.dataSource.close();
         }
@@ -134,64 +140,5 @@ public class MySQLDatabase implements IDatabase {
         return dataSource;
     }
 
-    public void createPlayer(UUID player) {
 
-        try {
-
-            // CREATE PLAYER ROW IN PLAYERS TABLE
-
-
-            PreparedStatement playerStatement = this.dataSource.getConnection().prepareStatement(SQLQueries.CREATE_PLAYER.getQuery());
-
-            playerStatement.setString(1, player.toString());
-            playerStatement.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
-            playerStatement.setString(3, "rootDeibis");
-
-            playerStatement.execute();
-
-
-
-            // CREATE PLAYER LEVEL ROW IN LEVEL TABLE
-
-            PreparedStatement levelStatement = this.dataSource.getConnection().prepareStatement(SQLQueries.CREATE_PLAYER_LEVEL.getQuery());
-
-            levelStatement.setString(1, player.toString());
-            levelStatement.setInt(2, 0);
-
-
-            levelStatement.execute();
-
-            // CREATE PLAYER STATS
-
-            PreparedStatement statsStatement = this.dataSource.getConnection().prepareStatement(SQLQueries.CREATE_PLAYER_STATS.getQuery());
-
-
-            statsStatement.setString(1, player.toString());
-            statsStatement.setInt(2, 0);
-            statsStatement.setInt(3, 0);
-            statsStatement.setInt(4, 0);
-            statsStatement.setInt(5, 0);
-            statsStatement.setInt(6, 0);
-            statsStatement.setInt(7, 0);
-            statsStatement.setInt(8, 0);
-
-            statsStatement.execute();
-
-            BedwarsPlugin.logger.info("Player [" + player.toString() + " : " + "rootDeibis" + "]");
-
-
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public boolean existsPlayer(IPlayer player) {
-        return false;
-    }
-
-    public void updatePlayer(IPlayer player) {
-
-    }
 }

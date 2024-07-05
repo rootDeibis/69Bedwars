@@ -1,6 +1,9 @@
 package me.rootdeibis.bedwars.common.player.data;
 
+import me.rootdeibis.bedwars.BedwarsPlugin;
+import me.rootdeibis.bedwars.common.database.IDatabase;
 import me.rootdeibis.bedwars.common.player.IPlayer;
+
 
 
 public class PlayerStatsData {
@@ -20,6 +23,7 @@ public class PlayerStatsData {
     public PlayerStatsData(IPlayer player) {
         this.player = player;
     }
+
 
     public int getWins() {
         return wins;
@@ -79,6 +83,29 @@ public class PlayerStatsData {
     public void setBedsBroken(int bedsBroken) {
         this.bedsBroken = bedsBroken;
     }
+
+
+    public void fetch() {
+        IDatabase database = BedwarsPlugin.getInstance().getDatabase();
+
+        Integer[] stats = database.getPlayerDB().getStats(this.player.getUUID());
+
+            this.setWins(stats[0]);
+            this.setPlayed(stats[1]);
+            this.setKills(stats[2]);
+            this.setFinalKills(stats[3]);
+            this.setDeaths(stats[4]);
+            this.setFinalDeaths(stats[5]);
+            this.setBedsBroken(stats[6]);
+
+
+    }
+
+    public void update() {
+        IDatabase database = BedwarsPlugin.getInstance().getDatabase();
+        database.getPlayerDB().setStats(this.player.getUUID());
+    }
+
 
 
 }

@@ -20,11 +20,18 @@ public class Arena implements IArena {
 
     private final ArenaConfig arenaConfig;
 
+    private boolean editor = false;
+
     public Arena(String name, String displayName, String worldName) {
         this.name = name;
         this.displayName = displayName;
         this.arenaWorld = new ArenaWorld(worldName);
         this.arenaConfig = new ArenaConfig(this);
+
+        if(this.arenaWorld.getWorld() == null) {
+            this.arenaWorld.create();
+            editor = true;
+        }
     }
     @Override
     public String getName() {
@@ -54,6 +61,11 @@ public class Arena implements IArena {
     @Override
     public ArenaConfig getConfiguration() {
         return arenaConfig;
+    }
+
+    @Override
+    public boolean isEditorMode() {
+        return editor;
     }
 
     public void setStatus(ArenaStatus arenaStatus) {

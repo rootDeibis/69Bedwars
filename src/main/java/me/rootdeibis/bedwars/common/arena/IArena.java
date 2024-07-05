@@ -20,6 +20,7 @@ public interface IArena {
 
     ArenaConfig getConfiguration();
 
+    boolean isEditorMode();
 
 
 }
