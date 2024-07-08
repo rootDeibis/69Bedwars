@@ -1,20 +1,23 @@
 package me.rootdeibis.bedwars;
 
+import me.rootdeibis.bedwars.common.arena.Arena;
+import me.rootdeibis.bedwars.common.arena.ArenaManager;
+import me.rootdeibis.bedwars.common.arena.IArena;
 import me.rootdeibis.bedwars.common.configuration.FileManager;
 import me.rootdeibis.bedwars.common.configuration.RFile;
 import me.rootdeibis.bedwars.common.database.IDatabase;
 import me.rootdeibis.bedwars.common.database.sql.MySQLDatabase;
 
+import me.rootdeibis.bedwars.common.utils.LoggerUtils;
 import me.rootdeibis.bedwars.listeners.Listeners;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
-import java.util.logging.Logger;
 
 public final class BedwarsPlugin extends JavaPlugin {
 
-    public static Logger logger = Bukkit.getLogger();
+    private  LoggerUtils logger;
     private static BedwarsPlugin bedwarsPlugin;
 
     private IDatabase database;
@@ -26,7 +29,7 @@ public final class BedwarsPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         bedwarsPlugin = this;
-
+        logger = new LoggerUtils(BedwarsPlugin.class);
         Listeners.register();
 
         // Prepare FileManager
@@ -36,8 +39,13 @@ public final class BedwarsPlugin extends JavaPlugin {
         this.setupConfigurations();
         this.setupDatabase();
 
-        running = true;
 
+
+        ArenaManager arenaManager = new ArenaManager();
+
+        arenaManager.loadMapsInDirectory();
+
+        running = true;
 
     }
 
@@ -56,6 +64,10 @@ public final class BedwarsPlugin extends JavaPlugin {
 
     public static BedwarsPlugin getInstance() {
         return bedwarsPlugin;
+    }
+
+    public FileManager getFileManager() {
+        return fileManager;
     }
 
     private void setupConfigurations() {

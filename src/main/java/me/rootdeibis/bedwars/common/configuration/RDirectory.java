@@ -1,9 +1,12 @@
 package me.rootdeibis.bedwars.common.configuration;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class RDirectory {
     private final FileManager fileManager;
@@ -31,6 +34,9 @@ public class RDirectory {
         }
     }
 
+    public List<File> getFiles(FileFilter fileFilter) {
+        return Arrays.stream(Objects.requireNonNull(this.file.listFiles(fileFilter))).collect(Collectors.toList());
+    }
     public RFile use(String path) {
         if(!files.containsKey(path)) {
 
@@ -60,6 +66,10 @@ public class RDirectory {
             rFile.setDefaults(name);
             rFile.create();
         });
+    }
+
+    public File getFile() {
+        return file;
     }
 
     public HashMap<String, RFile> getRFiles() {

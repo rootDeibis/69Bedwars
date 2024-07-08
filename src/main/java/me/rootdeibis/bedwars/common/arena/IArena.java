@@ -8,8 +8,7 @@ import java.util.List;
 
 public interface IArena {
 
-    String getName();
-    String getDisplayName();
+
 
     ArenaWorld getArenaWorld();
 
@@ -19,6 +18,8 @@ public interface IArena {
 
 
     ArenaConfig getConfiguration();
+
+    boolean isConfigured();
 
     boolean isEditorMode();
 
